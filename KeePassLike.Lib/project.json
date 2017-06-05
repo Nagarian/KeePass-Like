@@ -1,0 +1,39 @@
+﻿{
+  "version": "1.0.0-*",
+  "description": "KeePassLike.Lib Class Library",
+  "authors": [ "onyx_" ],
+  "tags": [ "" ],
+  "projectUrl": "",
+  "licenseUrl": "",
+  "frameworks": {
+    "net46": { },
+    "dotnet5.4": {
+      "dependencies": {
+        "Microsoft.CSharp": "4.0.1-beta-23516",
+        "System.Collections": "4.0.10",
+        "System.IO.FileSystem": "4.0.0",
+        "System.Linq": "4.0.0",
+        "System.Runtime": "4.0.20",
+        "System.Security.Cryptography.Algorithms": "4.0.0-beta-23516",
+        "System.Security.SecureString": "4.0.0-beta-23409",
+        "System.Threading": "4.0.10"
+      }
+    }
+  },
+  "configurations": {
+    "Debug": {
+      "compilationOptions": {
+        "define": [ "DEBUG" ]
+      }
+    },
+    "Release": {
+      "compilationOptions": {
+        "define": [ "RELEASE" ],
+        "optimize": true
+      }
+    }
+  },
+  "dependencies": {
+    "Newtonsoft.Json": "8.0.2"
+  }
+}

@@ -1,0 +1,73 @@
+﻿<Page
+    x:Class="KeePassLike.Views.DBKeyRingView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:KeePassLike.Views"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:uwpcompo="using:WinRTXamlToolkit.Controls"
+    xmlns:uwpcompodata="using:WinRTXamlToolkit.Controls.Data"
+    mc:Ignorable="d">
+    <d:Page.DataContext>
+        <local:DBKEyRingViewModel/>
+    </d:Page.DataContext>
+
+    <Page.Resources>
+        <MenuFlyout x:Key="KeyRingFlyout">
+            <MenuFlyoutItem Text="&#57609;  Ajouter un anneau" FontFamily="Segoe MDL2 Assets" Foreground="ForestGreen" Click="AddRing_Click"/>
+            <MenuFlyoutSeparator />
+            <MenuFlyoutItem Text="&#57604;  Editer l'anneau" FontFamily="Segoe MDL2 Assets" Foreground="DarkKhaki" Click="RenameRing_Click"/>
+            <MenuFlyoutItem Text="&#57607;  Supprimer l'anneau" FontFamily="Segoe MDL2 Assets" Foreground="Crimson" Click="DeleteRing_Click" />
+            <MenuFlyoutSeparator/>
+            <MenuFlyoutItem Text="&#57609;  Ajouter une clé" FontFamily="Segoe MDL2 Assets" Foreground="ForestGreen" Click="AddKey_Click"/>
+        </MenuFlyout>
+    </Page.Resources>
+
+    <SplitView DisplayMode="Inline" IsPaneOpen="True" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <SplitView.Pane>
+            <StackPanel>
+                <Button Padding="10, 5" FontSize="16" Background="{x:Null}" BorderBrush="{x:Null}" Click="SaveChanges_Click">
+                    <TextBlock>
+                        <Run Text="&#57605; " FontFamily="Segoe MDL2 Assets" />
+                        <Run Text="Sauvegarder les modifications" />
+                    </TextBlock>
+                </Button>
+
+                <Button Padding="10, 5"
+                        FontSize="16"
+                        Background="{x:Null}" BorderBrush="{x:Null}"
+                        FlyoutBase.AttachedFlyout="{StaticResource KeyRingFlyout}"
+                        RightTapped="DisplayRightMenu_Click">
+                    <TextBlock>
+                        <Run Text="&#57703; " FontFamily="Segoe MDL2 Assets" />
+                        <Run Text="{Binding Path=DB.MasterKeyRing.Title, Mode=OneTime}" />
+                    </TextBlock>
+                </Button>
+
+                <uwpcompo:TreeView x:Name="KeyRingList" Background="{x:Null}" Margin="16,0,0,0" RightTapped="DisplayRightMenu_Click"
+                                   ItemsSource="{Binding Path=DB.MasterKeyRing.SubKeyRing, Mode=OneWay}"
+                                   FlyoutBase.AttachedFlyout="{StaticResource KeyRingFlyout}"
+                                   SelectedItemChanged="KeyRingList_SelectedItemChanged">
+                    <uwpcompo:TreeView.ItemTemplate>
+                        <DataTemplate>
+                            <uwpcompodata:DataTemplateExtensions.Hierarchy>
+                                <uwpcompodata:HierarchicalDataTemplate ItemsSource="{Binding Path=SubKeyRing, Mode=OneWay}" />
+                            </uwpcompodata:DataTemplateExtensions.Hierarchy>
+                            <StackPanel d:Background="Bisque"
+                                        FlyoutBase.AttachedFlyout="{StaticResource KeyRingFlyout}"
+                                        RightTapped="DisplayRightMenu_Click">
+                                <TextBlock Text="{Binding Path=Title, Mode=OneWay}" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </uwpcompo:TreeView.ItemTemplate>
+                </uwpcompo:TreeView>
+            </StackPanel>
+        </SplitView.Pane>
+
+        <SplitView.Content>
+            <Frame x:Name="ContentFrame">
+                <!--<local:KeyRingView DataContext="{Binding ElementName=KeyRingList, Path=SelectedItem, Mode=OneWay}" />-->
+            </Frame>
+        </SplitView.Content>
+    </SplitView>
+</Page>

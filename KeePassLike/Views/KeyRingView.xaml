@@ -1,0 +1,104 @@
+﻿<Page
+    x:Class="KeePassLike.Views.KeyRingView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:KeePassLike.Views"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:converter="using:KeePassLike.Converters"
+    NavigationCacheMode="Disabled"
+    mc:Ignorable="d">
+
+    <d:Page.DataContext>
+        <local:DBKEyRingViewModel/>
+    </d:Page.DataContext>
+
+    <Page.Resources>
+        <converter:BooleanToVisibilityConverter x:Key="b2vConverter"/>
+        <Style x:Key="KeyHeader" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="18"/>
+        </Style>
+        <Style x:Key="TextBlockClickable" TargetType="Border">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderBrush" Value="{StaticResource TextBoxBorderThemeBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="10,5,0,8"/>
+        </Style>
+
+        <Style TargetType="Button" BasedOn="{StaticResource ResourceKey=ActionButton}"/>
+    </Page.Resources>
+
+    <Grid d:DataContext="{Binding Path=DB.MasterKeyRing}"
+          Background="{StaticResource ApplicationPageBackgroundThemeBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Text="{Binding Path=Title, Mode=OneWay}" Style="{StaticResource KeyHeader}" Padding="20, 14" FontSize="18" />
+        <Button Content="&#57609;" Click="Add_Click" Background="ForestGreen" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,18,0" ToolTipService.ToolTip="Ajouter une nouvelle clé"/>
+        <ListView Grid.Row="1" ItemsSource="{Binding Path=Keys, Mode=OneWay}">
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                </Style>
+            </ListView.ItemContainerStyle>
+            <ListView.Header>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="40" />
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                        <ColumnDefinition Width="40" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="1" Text="Nom de la clé" Padding="12,0,0,0" />
+                    <TextBlock Grid.Column="2" Text="Username" Padding="12,0,0,0" />
+                    <TextBlock Grid.Column="3" Text="Password" Padding="12,0,0,0" />
+                </Grid>
+            </ListView.Header>
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <Grid ToolTipService.ToolTip="{Binding Path=Description, Mode=OneWay}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="40" />
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0"
+                                           Text="&#57746;"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"
+                                           FontFamily="Segoe MDL2 Assets" />
+                        <TextBlock Grid.Column="1" Text="{Binding Path=Title, Mode=OneWay}" VerticalAlignment="Center" />
+                        <Border Grid.Column="2" Tapped="CopyUsername_Click" Style="{StaticResource TextBlockClickable}">
+                            <TextBlock Text="{Binding Path=Username, Mode=OneWay}" VerticalAlignment="Center" IsHitTestVisible="False" />
+                        </Border>
+                        <Border Grid.Column="3" Tapped="CopyPassword_Click" Style="{StaticResource TextBlockClickable}">
+                            <TextBlock Text="**************" VerticalAlignment="Center" IsHitTestVisible="False" />
+                        </Border>
+                        <StackPanel Grid.Column="4" Orientation="Horizontal" Margin="8,0,0,0">
+                            <Button Content="&#57604;" Click="Edit_Click" Background="DarkKhaki" ToolTipService.ToolTip="Editer" />
+                            <Button Content="&#57607;" Click="Delete_Click" Background="Crimson" ToolTipService.ToolTip="Supprimer"/>
+                        </StackPanel>
+                    </Grid>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+
+        <Grid Grid.Row="2" Visibility="{Binding CopyIsActive, Converter={StaticResource b2vConverter}}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="3*"/>
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <TextBlock>
+                <Run Text="Nombre de clés : "/>
+                <Run Text="{Binding Path=Keys.Count, Mode=OneWay}"/>
+            </TextBlock>
+            <ProgressBar x:Name="CopyProgress" Grid.Column="1" Height="20"/>
+        </Grid>
+    </Grid>
+</Page>
